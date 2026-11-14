@@ -24,6 +24,10 @@ All six runs trained stably to comparable loss. GQA is slightly but consistently
 
 The same numbers are in `results.csv`.
 
+![Pretraining loss curves of the six runs](loss_curves.png)
+
+All six runs follow the same training curve (a). In the second half of training (b), the three GQA runs stay just above the three MHA runs. The curves come from the run logs (`training_curves.csv`) and are drawn by `plot_loss_curves.py`.
+
 ## Model
 
 A Llama-style decoder-only transformer: RMSNorm (pre-norm), rotary position embeddings (RoPE), SwiGLU feed-forward layers, no biases, and tied input/output embeddings.
@@ -67,6 +71,8 @@ GQA has smaller key/value projections, so its feed-forward layer is widened to g
 | `count_params.py`, `check_shards.py`, `prepare_tinystories.py` | Parameter counts, shard checks, smoke-test data |
 | `tests/test_part2.py` | 11 checks, e.g. GQA equals MHA with copied K/V weights, no attention to future tokens, exact checkpoint reload |
 | `results.csv` | The results table above |
+| `training_curves.csv` | Training loss every 20 steps and validation loss every 100 steps, per run |
+| `plot_loss_curves.py`, `loss_curves.png` | The loss-curve figure and the script that draws it |
 
 ## Reproducing
 

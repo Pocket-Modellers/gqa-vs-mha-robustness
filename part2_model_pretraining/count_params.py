@@ -1,5 +1,5 @@
 """
-Print parameter counts for MHA, GQA and MQA with the current base.yaml settings.
+Print parameter counts for MHA and GQA with the current base.yaml settings.
 
     python count_params.py
 
@@ -15,8 +15,7 @@ def main():
     n_heads = int(base["n_heads"])
     rows = []
     arms = [("MHA", n_heads),
-            ("GQA", int(load_config("configs/gqa_s0.yaml")["n_kv_heads"])),
-            ("MQA", int(load_config("configs/mqa_s0.yaml")["n_kv_heads"]))]
+            ("GQA", int(load_config("configs/gqa_s0.yaml")["n_kv_heads"]))]
     for name, kv in arms:
         c = dict(base, n_kv_heads=kv)
         mcfg = build_model_config(c)
@@ -29,7 +28,7 @@ def main():
         diff = 100 * (total - ref) / ref
         print(f"{name:5s} {kv:>8d} {ffn:>10d} {total:>14,} {non_emb:>12,} {diff:>+7.3f}%")
     print("\nmatch_params is", base.get("match_params", True),
-          "(true = GQA/MQA get a wider FFN to match MHA)")
+          "(true = GQA gets a wider FFN to match MHA)")
 
 
 if __name__ == "__main__":
