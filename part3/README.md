@@ -24,7 +24,6 @@ Run the analysis scripts from this folder in the order shown. All random draws a
 | `preds_<arch>_<seed>.jsonl` | Greedy generations of each final SFT model on `eval_set.jsonl` (`{"id", "output"}` per line) |
 | `logp_<arch>_<seed>.jsonl` | Label log-probabilities for the two closed tasks, one file per model (2,000 rows each) |
 | `score.py` | Shared scoring functions (exact match, ROUGE-L) |
-| `check_preds.py`, `check_eval.py` | Checks for prediction-file format and evaluation-file integrity |
 | `collect_all.py`, `compare_arch.py`, `three_metrics.py`, `extra_metrics.py`, `logprob_metrics.py`, `final_tables.py` | The analysis chain |
 | `brittleness_table.csv` | Per-model clean scores and percentage-point drops by perturbation type (Part 3 hand-off table) |
 | `final_summary.txt` | Results, verdict, caveats, and input hashes |
@@ -75,7 +74,7 @@ Verdict under the rule: no detectable difference between MHA and GQA. Dolly give
 
 ## Limitations
 
-- Seeds are independent pretraining runs; fine-tuning used one fixed data order, so fine-tuning variation is not measured.
+- Seeds are independent pretraining runs; fine-tuning used one fixed data order.
 - With three seeds per architecture, the smallest possible permutation p-value is 0.10, and the four metrics are correlated.
 - GQA has a wider feed-forward layer (2,432 versus 2,048) to match parameter counts, and a slightly higher pretraining loss. Higher clean accuracy goes with larger absolute drops, so absolute and relative drops are both reported.
 - Closed-task scoring is exact match on the first label word; ROUGE-L is a crude measure for open-ended answers. A single score carries about 3.5 points of sampling noise with 200 items.
@@ -88,10 +87,6 @@ Verdict under the rule: no detectable difference between MHA and GQA. Dolly give
 
 
 
-## SFT provenance files for Part 1 review
 
-The `provenance/` folder includes the tokenizer used with the SFT outputs, Part 3's `sft_closed.jsonl` input, and the held-out data used by `make_data.py`. `sft_artifacts/train.jsonl.gz` is the compressed copy of the SFT `train.jsonl` output received with the Part 2 files. The held-out file has SHA-256 `C547A730C5C1BA3D1BD57D51287F88F6DB3F14F7A35C1FDA78C0DF38A2CBBE50`; the uncompressed train file has SHA-256 `8613ADC1C2DFBE41DCAC4940CCB7072FF061B7FA15D1F19F2B636CF56C909730`. The included tokenizer has SHA-256 `C7039AE373DB120B7F42EE139C17A8469EEB20552370CCD50456D920E12AA3A0`, and the included `sft_closed.jsonl` has SHA-256 `5B5FCAD066B5625BACCD25B9BCF712EE8EBF8E6794A8357F6767C84DC42D8553`.
-
-These files let Part 1 compare the received SFT artifacts with the output of that script version; their inclusion alone does not establish which script version generated the training data.
 
 
