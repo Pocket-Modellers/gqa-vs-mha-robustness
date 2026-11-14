@@ -1,0 +1,3 @@
+layer,head,accuracy_after_ablation,accuracy_drop_pp,margin_drop
+6,8,0.76,23.0,1.908334
+7,5,0.91,8.0,1.071358
