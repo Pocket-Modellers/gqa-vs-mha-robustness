@@ -38,3 +38,5 @@ The concentration–brittleness correlation is pending. It requires joining the 
 ## Reproducing the audit
 
 Open the [circuit-audit notebook](part4-circuit-audit-mha-vs-gqa%20%284%29.ipynb) and attach the project model code, tokenizer, and checkpoints referenced in its Kaggle inputs. The notebook contains the prompt generator, baseline evaluation, ablation hooks, and result export steps.
+
+We compared pretrained circuit concentration with post-SFT perturbation accuracy drops across six models. For the ALL summary, Spearman correlations between the number of groups needed to reach 80% margin reduction and the accuracy drop were −0.78 for SST-2 and +0.51 for AG News. Correlations for the strongest-group score were −0.20 and −0.31, respectively. The direction of the relationship depended on the task and metric. With six models, these results are exploratory. See [the joined results](concentration_vs_brittleness.csv).
