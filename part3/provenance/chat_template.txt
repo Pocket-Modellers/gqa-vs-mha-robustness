@@ -1,0 +1,33 @@
+SFT CHAT TEMPLATE (Pocket Modellers) - exact spec
+
+Tokenizer: tokenizer_32000.json  (byte-level BPE, vocab 32000, no BOS token)
+Special tokens: <|endoftext|>=0  <|pad|>=1  <|im_start|>=2  <|im_end|>=3
+
+Full training text (ChatML-style; there is NO "### Response:" header):
+
+<|im_start|>user\n{instruction}\n\n{context}<|im_end|>\n<|im_start|>assistant\n{response}<|im_end|>
+
+- If context is empty, the "\n\n{context}" part is dropped.
+- instruction, context and response are each .strip()-ed.
+- Loss is computed ONLY on {response}<|im_end|>. Everything before it is label -100.
+- EOS / stop token for generation: <|im_end|> (id 3).
+  <|endoftext|> (id 0) only separates documents in the pretraining shards; do not use it as the stop token.
+- At inference/eval, the prompt ends right after "<|im_start|>assistant\n" and the model generates
+  the response, stopping at id 3.
+- The prompt and the response are tokenized SEPARATELY and concatenated (so token boundaries
+  match training). Do the same at eval time.
+
+Reference code (copied from 03_prepare_sft.py):
+
+def prompt_text(instr, ctx):
+    user = instr.strip() + (f"\n\n{ctx.strip()}" if ctx.strip() else "")
+    return f"<|im_start|>user\n{user}<|im_end|>\n<|im_start|>assistant\n"
+
+def encode(instr, ctx, resp):
+    p_ids = tok.encode(prompt_text(instr, ctx)).ids
+    r_ids = tok.encode(resp.strip() + "<|im_end|>").ids
+    return p_ids + r_ids, [-100] * len(p_ids) + r_ids
+
+Files:
+- sft/train.jsonl    {"input_ids", "labels", "category"}  max 512 tokens
+- sft/heldout.jsonl  1,000 Dolly rows (instruction, context, response, category); excluded from train

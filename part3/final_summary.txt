@@ -1,0 +1,118 @@
+PART 3 FINAL SUMMARY
+======================================================================
+Models: 3 MHA and 3 GQA. Decision metrics available: M1_mean_drop, M2_format_spread, M3_answer_change, M4_logprob_shift.
+Baseline gate FAILED for sst2 (clean below 65%): gqa_s0, gqa_s1, gqa_s2, mha_s0, mha_s1, mha_s2. Excluded from the verdict.
+
+Legend (all higher = more brittle unless stated)
+  M1_mean_drop       mean of (clean score - perturbed score) over four perturbations, points
+  M2_format_spread   highest minus lowest score across the five prompt formats
+  M3_answer_change   share of items whose predicted label changes (Dolly: 100 x (1 - ROUGE-L))
+  M4_logprob_shift   mean fall in the log-prob margin of the correct label, nats (closed tasks only)
+  M4b_pcorrect_drop  mean fall in the probability of the correct label, points (closed tasks only)
+  S_cond_loss / S_gain_rate / S_L_*  loss rate L (correct on clean, wrong after), gain rate G, and L per perturbation
+  S_bal_clean / S_bal_drop  balanced accuracy (mean per-label recall) and its drop
+  S_majority_baseline       accuracy of always guessing the most common label (not a brittleness measure)
+  S_top_answer_<format>     share of outputs given to the single most common answer (high = collapse)
+  S_M4_first_token / S_margin_clean / S_agree_clean  first-token version of M4, clean margin, label agreement
+
+--- agnews: MHA vs GQA, mean [min, max] over seeds (diff = MHA - GQA; hypothesis predicts < 0) ---
+  M1_mean_drop         MHA  17.667 [16.00, 20.12] | GQA  15.292 [12.00, 21.00] | diff  +2.375 | perm p 0.60 | separated no 
+  M2_format_spread     MHA  26.833 [22.00, 35.00] | GQA  23.167 [17.50, 34.00] | diff  +3.667 | perm p 0.50 | separated no 
+  M3_answer_change     MHA  28.458 [26.12, 29.88] | GQA  28.375 [25.75, 31.38] | diff  +0.083 | perm p 1.00 | separated no 
+  M4_logprob_shift     MHA   0.662 [0.60, 0.73] | GQA   0.537 [0.41, 0.75] | diff  +0.125 | perm p 0.40 | separated no 
+  clean                MHA  82.000 [78.50, 85.00] | GQA  77.500 [74.00, 83.00] | diff  +4.500 | perm p 0.30 | separated no    (supplementary)
+  S_cond_loss          MHA  26.513 [23.82, 28.48] | GQA  25.608 [23.48, 29.67] | diff  +0.905 | perm p 0.80 | separated no    (supplementary)
+  S_gain_rate          MHA  22.262 [19.29, 25.00] | GQA  20.870 [17.31, 23.98] | diff  +1.392 | perm p 0.60 | separated no    (supplementary)
+  S_bal_drop           MHA  18.291 [16.79, 20.58] | GQA  15.841 [12.65, 21.66] | diff  +2.449 | perm p 0.60 | separated no    (supplementary)
+  M4b_pcorrect_drop    MHA  10.821 [9.84, 11.53] | GQA   9.208 [7.39, 12.77] | diff  +1.614 | perm p 0.40 | separated no    (supplementary)
+  All other supplementary metrics for agnews (also in final_metrics_arch.csv):
+    S_L_paraphrase             MHA   29.150 | GQA   35.403 | diff   -6.254 | perm p 0.40
+    S_L_distractor             MHA   12.643 | GQA    8.029 | diff   +4.614 | perm p 0.30
+    S_L_reformat               MHA   24.609 | GQA   28.566 | diff   -3.956 | perm p 0.80
+    S_L_reformat2              MHA   39.648 | GQA   30.434 | diff   +9.214 | perm p 0.20
+    S_top_answer_clean         MHA   29.500 | GQA   28.833 | diff   +0.667 | perm p 0.80
+    S_top_answer_paraphrase    MHA   43.667 | GQA   34.167 | diff   +9.500 | perm p 0.20
+    S_top_answer_distractor    MHA   34.500 | GQA   31.833 | diff   +2.667 | perm p 0.40
+    S_top_answer_reformat      MHA   41.667 | GQA   41.167 | diff   +0.500 | perm p 1.00
+    S_top_answer_reformat2     MHA   57.833 | GQA   48.000 | diff   +9.833 | perm p 0.30
+    S_bal_clean                MHA   82.237 | GQA   77.834 | diff   +4.403 | perm p 0.30
+    S_majority_baseline        MHA   26.500 | GQA   26.500 | diff   +0.000 | perm p 1.00
+    S_M4_first_token           MHA    0.659 | GQA    0.537 | diff   +0.122 | perm p 0.40
+    S_margin_clean             MHA    1.308 | GQA    1.202 | diff   +0.106 | perm p 0.50
+    S_agree_clean              MHA   99.500 | GQA  100.000 | diff   -0.500 | perm p 0.40
+  Direction: same sign on all metrics, MHA higher (a sign alone is not evidence). Separated seeds on 0 of 4 decision metrics.
+  Verdict (rule v2): NOT claimable. No detectable difference.
+
+--- dolly: MHA vs GQA, mean [min, max] over seeds (diff = MHA - GQA; hypothesis predicts < 0) ---
+  M1_mean_drop         MHA   5.707 [5.51, 5.97] | GQA   5.532 [4.87, 6.57] | diff  +0.175 | perm p 0.80 | separated no 
+  M2_format_spread     MHA   8.491 [7.71, 9.60] | GQA   8.385 [6.59, 10.20] | diff  +0.106 | perm p 1.00 | separated no 
+  M3_answer_change     MHA  60.470 [58.70, 61.50] | GQA  59.055 [58.42, 60.32] | diff  +1.415 | perm p 0.20 | separated no 
+  clean                MHA  26.867 [26.14, 27.41] | GQA  26.680 [26.04, 27.63] | diff  +0.187 | perm p 0.90 | separated no    (supplementary)
+  Direction: same sign on all metrics, MHA higher (a sign alone is not evidence). Separated seeds on 0 of 3 decision metrics.
+  Verdict (rule v2): NOT claimable. No detectable difference.
+
+--- sst2: MHA vs GQA, mean [min, max] over seeds (diff = MHA - GQA; hypothesis predicts < 0) ---
+  M1_mean_drop         MHA   1.042 [-1.50, 4.88] | GQA  -0.667 [-2.12, 1.25] | diff  +1.708 | perm p 0.60 | separated no 
+  M2_format_spread     MHA  12.000 [6.50, 15.50] | GQA  13.833 [9.00, 17.00] | diff  -1.833 | perm p 0.60 | separated no 
+  M3_answer_change     MHA  19.208 [13.25, 24.12] | GQA  18.333 [15.88, 19.75] | diff  +0.875 | perm p 0.80 | separated no 
+  M4_logprob_shift     MHA   0.047 [0.03, 0.05] | GQA   0.071 [0.04, 0.11] | diff  -0.024 | perm p 0.30 | separated no 
+  clean                MHA  55.667 [53.50, 57.00] | GQA  56.500 [56.00, 57.00] | diff  -0.833 | perm p 0.90 | separated no    (supplementary)
+  S_cond_loss          MHA  17.948 [15.49, 20.83] | GQA  15.337 [15.04, 15.79] | diff  +2.610 | perm p 0.20 | separated no    (supplementary)
+  S_gain_rate          MHA  20.164 [8.91, 28.20] | GQA  21.483 [16.48, 24.43] | diff  -1.319 | perm p 0.80 | separated no    (supplementary)
+  S_bal_drop           MHA   1.042 [-1.50, 4.87] | GQA  -0.667 [-2.13, 1.25] | diff  +1.708 | perm p 0.60 | separated no    (supplementary)
+  M4b_pcorrect_drop    MHA   1.083 [0.80, 1.26] | GQA   1.433 [0.88, 2.14] | diff  -0.350 | perm p 0.40 | separated no    (supplementary)
+  All other supplementary metrics for sst2 (also in final_metrics_arch.csv):
+    S_L_paraphrase             MHA   22.126 | GQA   24.822 | diff   -2.696 | perm p 0.50
+    S_L_distractor             MHA   13.828 | GQA   12.651 | diff   +1.177 | perm p 0.80
+    S_L_reformat               MHA   18.217 | GQA   11.469 | diff   +6.748 | perm p 0.30
+    S_L_reformat2              MHA   17.621 | GQA   12.408 | diff   +5.212 | perm p 0.30
+    S_top_answer_clean         MHA   86.000 | GQA   88.833 | diff   -2.833 | perm p 0.40
+    S_top_answer_paraphrase    MHA   70.167 | GQA   63.500 | diff   +6.667 | perm p 0.60
+    S_top_answer_distractor    MHA   76.667 | GQA   79.167 | diff   -2.500 | perm p 0.90
+    S_top_answer_reformat      MHA   84.333 | GQA   83.667 | diff   +0.667 | perm p 1.00
+    S_top_answer_reformat2     MHA  100.000 | GQA   92.167 | diff   +7.833 | perm p 0.40
+    S_bal_clean                MHA   55.667 | GQA   56.500 | diff   -0.833 | perm p 0.90
+    S_majority_baseline        MHA   50.000 | GQA   50.000 | diff   +0.000 | perm p 1.00
+    S_M4_first_token           MHA    0.047 | GQA    0.071 | diff   -0.024 | perm p 0.30
+    S_margin_clean             MHA    0.162 | GQA    0.215 | diff   -0.052 | perm p 0.40
+    S_agree_clean              MHA   99.333 | GQA   99.833 | diff   -0.500 | perm p 0.70
+  Verdict: not evaluated (baseline gate failed).
+
+Every metric above is also in final_metrics_arch.csv (MHA vs GQA) and final_metrics_seed.csv (per model).
+
+ANCOVA (exploratory): MHA minus GQA after adjusting for clean accuracy
+  agnews / net_drop: -1.01 (95% CI [-9.1, 7.1], df = 3, slope on clean = +0.75)
+  agnews / cond_loss: -0.69 (95% CI [-10.2, 8.8], df = 3, slope on clean = +0.35)
+
+Multiplicity: 10 per-perturbation comparisons in final_per_perturbation_arch.csv (bonferroni_p = min(1, perm_p x 10))
+  agnews / distractor: perm p 0.10, Bonferroni p 1.00
+  agnews / reformat2: perm p 0.10, Bonferroni p 1.00
+  dolly / reformat2: perm p 0.20, Bonferroni p 1.00
+  dolly / reformat: perm p 0.30, Bonferroni p 1.00
+  agnews / ALL: perm p 0.60, Bonferroni p 1.00
+Identity check, net drop = c*L - (1-c)*G, max abs error over closed-task rows: 0.000000 pp
+
+Inputs used (real files only; sha256 prefix and size)
+  eval_set.jsonl               dd20736fbc32   1,404,025 bytes
+  preds_gqa_s0.jsonl           f7ba05aaef5a     290,156 bytes
+  preds_gqa_s1.jsonl           2f359c3d546c     266,581 bytes
+  preds_gqa_s2.jsonl           ecb3a92d6c8d     279,489 bytes
+  preds_mha_s0.jsonl           2dd1543dd194     282,802 bytes
+  preds_mha_s1.jsonl           a34aca63510f     278,658 bytes
+  preds_mha_s2.jsonl           0d8e737a3c32     269,215 bytes
+  logp_gqa_s0.jsonl            d2e5f4341371     364,320 bytes
+  logp_gqa_s1.jsonl            58b0c593e579     364,450 bytes
+  logp_gqa_s2.jsonl            27b9df458403     364,270 bytes
+  logp_mha_s0.jsonl            d54a9c801871     364,404 bytes
+  logp_mha_s1.jsonl            557817ef7521     364,320 bytes
+  logp_mha_s2.jsonl            e8f59ffc50ee     364,328 bytes
+
+Caveats
+  - Seeds are independent pretraining runs; SFT used one fixed data order.
+  - With 3 vs 3 seeds the smallest possible permutation p is 0.10; the four metrics are correlated.
+  - GQA has a wider FFN and a slightly higher pretraining loss; larger drops go with higher clean accuracy.
+  - M4 is computed for the closed tasks only; the Dolly verdict uses M1-M3.
+  - Chronology: M1 had been seen before the decision rule was written. The three-metric rule (M1-M3) was
+    declared before M2 and M3 were computed. M4 and the S_ metrics were added after the M1-M3 results were
+    seen, so they are reported in full and cannot overturn the verdict.
+  - Dolly metrics are secondary: ROUGE-L is crude, and its M3 and M4 are defined differently from the closed tasks.
