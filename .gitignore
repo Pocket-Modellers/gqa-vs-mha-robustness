@@ -1,0 +1,18 @@
+# data and checkpoints
+data/
+sft/
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# python and tools
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+wandb/
+
+# secrets
+.env
+*token*.txt
