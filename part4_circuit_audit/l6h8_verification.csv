@@ -1,0 +1,2 @@
+head,baseline_accuracy,ablated_accuracy,accuracy_drop_pp,baseline_margin,ablated_margin,margin_drop
+L6H8,0.99,0.76,23.0,3.2688824701309205,1.3605489873886107,1.9083334827423097
