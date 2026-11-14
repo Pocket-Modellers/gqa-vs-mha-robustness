@@ -1,0 +1,4 @@
+base: base.yaml
+run_name: gqa_s0
+n_kv_heads: 3   # 12 query heads share 3 KV heads (4 per group) -> GQA
+seed: 0

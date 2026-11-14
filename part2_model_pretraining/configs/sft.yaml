@@ -1,0 +1,20 @@
+# SFT settings: IDENTICAL for every model. Never change these between models.
+
+tokenizer: tokenizer_32000.json
+train_file: sft/train.jsonl     # from Santosh (65,832 rows incl. Sree's sft_closed rows)
+val_fraction: 0.02              # 2% of train.jsonl held back to watch SFT val loss
+                                # (Santosh's heldout.jsonl is Sree's, never train on it)
+
+epochs: 2
+batch_size: 8                   # examples per micro-batch (max 512 tokens each); fits a T4
+grad_accum: 8                   # 64 examples per optimizer step
+lr: 1.0e-4                      # lower than pretraining: we're adjusting, not starting over
+min_lr_ratio: 0.1
+warmup_steps: 50
+weight_decay: 0.0
+grad_clip: 1.0
+sft_seed: 0                     # fixed: every model sees examples in the same order
+
+eval_every: 200
+log_every: 20
+out_dir: ckpts

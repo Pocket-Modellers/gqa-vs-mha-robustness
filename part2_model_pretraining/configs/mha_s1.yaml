@@ -1,0 +1,4 @@
+base: base.yaml
+run_name: mha_s1
+n_kv_heads: 12  # = n_heads -> MHA
+seed: 1

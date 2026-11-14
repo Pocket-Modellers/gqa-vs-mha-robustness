@@ -1,0 +1,46 @@
+# Shared settings for EVERY pretraining run.
+# Per-run files (mha_s0.yaml, gqa_s0.yaml, ...) only set run_name, n_kv_heads and seed.
+# Changing anything here changes all runs, which is what we want for a fair comparison.
+
+# ---------------- model (Llama-style)
+vocab_size: 32000        # Santosh's tokenizer_32000.json
+d_model: 768             # ~110M params total (~85M without embeddings)
+n_layers: 12
+n_heads: 12              # query heads
+ffn_hidden: 2048         # SwiGLU hidden size for MHA
+match_params: true       # GQA/MQA get a wider FFN so total params match MHA
+seq_len: 1024            # context length (SFT examples must fit in this)
+
+# ---------------- data (Santosh's shards)
+data_dir: data/fineweb
+train_pattern: "train_*.bin"   # change to match Santosh's file names
+val_pattern: "val_*.bin"
+
+# ---------------- training
+batch_size: 4            # sequences per micro-batch (8 ran out of memory on a 15GB T4)
+grad_accum: 128          # micro-batches per optimizer step -> 4*1024*128 = 524,288 tokens/step
+train_tokens: 1.0e9      # 1B tokens per run (~1,900 steps)
+lr: 6.0e-4
+min_lr_ratio: 0.1
+warmup_steps: 200
+weight_decay: 0.1
+grad_clip: 1.0
+compile: false           # true = faster on a modern GPU, but slower to start
+
+# ---------------- evaluation and logging
+eval_every: 100          # steps between validation-loss checks
+eval_batches: 20         # validation uses the same fixed tokens for every run
+log_every: 10
+
+# ---------------- checkpoints (same token schedule for every run, for Part 4)
+out_dir: ckpts
+ckpt_every_tokens: 2.0e8               # a weights-only checkpoint every 200M tokens
+ckpt_extra_tokens: [2.5e7, 5.0e7, 1.0e8]  # extra early ones for Part 4's early IOI check
+# -> saved at 25M, 50M, 100M, 200M, 400M, 600M, 800M tokens, plus final.pt (~1B)
+#    8 files x ~440MB + latest.pt ~1.3GB = ~5GB per run
+save_latest_every: 50                  # steps between resume checkpoints
+resume: true
+
+# ---------------- Weights & Biases (optional)
+use_wandb: false
+wandb_project: mha-vs-gqa

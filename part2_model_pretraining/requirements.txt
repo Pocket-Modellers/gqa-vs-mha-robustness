@@ -1,0 +1,7 @@
+torch>=2.2
+numpy
+tokenizers
+pyyaml
+pytest
+datasets   # only for prepare_tinystories.py
+wandb      # optional, only if use_wandb: true

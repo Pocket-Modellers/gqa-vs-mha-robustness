@@ -1,0 +1,15 @@
+# Smoke test on TinyStories: proves the whole pipeline works before the real runs.
+# First run: python prepare_tinystories.py --tokenizer tokenizer_32000.json
+base: base.yaml
+run_name: tinystories_gqa
+n_kv_heads: 3
+seed: 0
+data_dir: data/tinystories
+train_pattern: "train.bin"
+val_pattern: "val.bin"
+train_tokens: 5.0e7       # 50M tokens: enough to write sensible little stories
+batch_size: 4
+grad_accum: 16            # 4*1024*16 = 65,536 tokens/step -> ~760 steps
+warmup_steps: 50
+ckpt_every_tokens: 2.5e7
+ckpt_extra_tokens: []
