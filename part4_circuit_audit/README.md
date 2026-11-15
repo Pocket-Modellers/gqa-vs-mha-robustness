@@ -41,6 +41,19 @@ Part 3 excluded SST-2 because all models scored below the 65% clean-accuracy gat
 
 ## Reproducing the audit
 
-Open [part4_circuit_audit.ipynb](part4_circuit_audit.ipynb) and start with its run guide. It identifies the cells for checkpoint verification and plotting from saved results, and labels the historical cells that previously stopped with errors or interruptions. The revised notebook has not been rerun end to end.
+## Reproducing the audit
 
-For `mha_s1`, attach **version 1** of the Kaggle dataset `mha-s1-ckpts` and run the checkpoint inventory before starting the audit. The saved inventory found `ckpts/mha_s1/final.pt` with 12 query heads and 12 KV heads. The separate `gqa_s2` checkpoint had 3 KV heads. The original notebook did not record the Kaggle dataset version, so the saved output verifies the architecture and path, while the exact version used remains unverified.
+The [circuit audit notebook](part4_circuit_audit.ipynb) includes saved outputs from the original Kaggle run. The [pretrained results summary](final_pretrained_results_summary.csv) and [groups-to-80% plot](components_to_80_comparison.png) show the main findings.
+
+To set up the pretrained audit in Kaggle, attach these datasets from `nainikabatchu`:
+
+| Purpose | Kaggle datasets |
+|---|---|
+| Model code | `archive` |
+| Tokenizer | `tokenizer-32000-json` |
+| MHA checkpoints | `mha-s0-ckpts2`, `mha-s1-ckpts` (version 1), `mha-s2-ckpts` |
+| GQA checkpoints | `gqa-s0-ckpts`, `gqa-s1-ckpts`, `gqa-s2` |
+
+The notebook generates the synthetic IOI prompts. If Kaggle mounts an input at a different path, update the corresponding path in the notebook. Access to any private datasets is required.
+
+Run the checkpoint inventory cell before starting the ablation analysis. For `mha_s1`, verify that `ckpts/mha_s1/final.pt` has **12 query heads and 12 key/value heads**.
