@@ -33,10 +33,14 @@ The six supervised fine-tuned models reached **99.0–100.0%** baseline IOI accu
 
 ## Concentration and brittleness
 
-The concentration–brittleness correlation is pending. It requires joining the circuit-audit scores with Part 3’s perturbation-induced accuracy drops by architecture and seed.
+We joined the pretrained circuit-audit scores to Part 3’s **post-SFT** perturbation accuracy drops by architecture and seed. Across the six models, the AG News `ALL` summary gave a Spearman correlation of **+0.51** for groups needed to reach an 80% margin reduction and **−0.31** for the strongest-group score. These estimates are exploratory given the six-model sample. See the AG News rows in the [joined results](concentration_vs_brittleness.csv).
+
+Part 3 excluded SST-2 because all models scored below the 65% clean-accuracy gate. The reported correlations therefore use AG News only.
+
+**Limitation.** Concentration and brittleness were measured at different training stages. The correlations describe how pretrained circuit concentration relates to post-SFT brittleness across corresponding model runs. A same-stage comparison would require concentration measurements from the SFT checkpoints.
 
 ## Reproducing the audit
 
-Open the [circuit-audit notebook](part4-circuit-audit-mha-vs-gqa%20%284%29.ipynb) and attach the project model code, tokenizer, and checkpoints referenced in its Kaggle inputs. The notebook contains the prompt generator, baseline evaluation, ablation hooks, and result export steps.
+Open [part4_circuit_audit.ipynb](part4_circuit_audit.ipynb) and start with its run guide. It identifies the cells for checkpoint verification and plotting from saved results, and labels the historical cells that previously stopped with errors or interruptions. The revised notebook has not been rerun end to end.
 
-We compared pretrained circuit concentration with post-SFT perturbation accuracy drops across six models. For the ALL summary, Spearman correlations between the number of groups needed to reach 80% margin reduction and the accuracy drop were −0.78 for SST-2 and +0.51 for AG News. Correlations for the strongest-group score were −0.20 and −0.31, respectively. The direction of the relationship depended on the task and metric. With six models, these results are exploratory. See [the joined results](concentration_vs_brittleness.csv).
+For `mha_s1`, attach **version 1** of the Kaggle dataset `mha-s1-ckpts` and run the checkpoint inventory before starting the audit. The saved inventory found `ckpts/mha_s1/final.pt` with 12 query heads and 12 KV heads. The separate `gqa_s2` checkpoint had 3 KV heads. The original notebook did not record the Kaggle dataset version, so the saved output verifies the architecture and path, while the exact version used remains unverified.
